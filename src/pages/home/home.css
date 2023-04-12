@@ -1,0 +1,99 @@
+.contentHome {
+    display: flex;
+    justify-content: center;
+}
+
+.publicationsHome {
+    padding-top: 30px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 100%;
+    max-width: 1024px;
+}
+
+.publicacaoHome{
+    border: 1px solid black; 
+    margin: 20px;
+}
+
+.publicacaoCabecalhoHome {
+    border-bottom: 1px solid black;
+    display: flex;
+    padding: 5px;
+    justify-items: center;
+    align-items: center;
+}
+
+.publicacaoFotoHome {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: black;
+}
+
+.publicacaoNomeHome {
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.publicacaoDataHome {
+    margin-left: 5px;
+}
+
+.publicationReportHome {
+    font-weight:bold;
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.publicacaoConteudoHome {
+    padding: 5px;
+    max-height: 400px;
+    overflow: auto
+}
+
+.publicacaoBotoesHome {
+    border-top: 1px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.comentarioHome {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding: 5px;
+}
+
+.autorComentarioHome {
+    font-weight: bold;
+}
+
+.conteudoComentarioHome {
+
+}
+
+.textInputComentariosHome {
+    margin: 5px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+}
+
+.textInputConfirmHome{
+    color: white;
+    margin: 5px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray;
+}

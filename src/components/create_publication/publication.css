@@ -1,0 +1,71 @@
+.publication {
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    min-width: 360px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: white;
+}
+
+.publicationField {
+    margin-top: 15px;
+    width: 100%;
+    min-width: 360px;
+    max-width: 1024px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: white;
+}
+
+.titleCreatePublication {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-family: "Brush Script MT", cursive;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    color: #003A65;
+    margin-bottom: 20px;
+}
+
+.previewPublication {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-family: "Brush Script MT", cursive;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    color: #003A65;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.buttonsEndPublication {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}

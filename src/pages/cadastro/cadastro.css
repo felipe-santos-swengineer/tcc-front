@@ -1,0 +1,15 @@
+.userTypeSelectedCadastro {
+    user-select: none;
+    background-color: #008240;
+    color: White;
+    font-weight: bold;
+    width: 120px;
+    height: 40px;
+}
+
+.userTypeUnselectedCadastro {
+    user-select: none;
+    background-color: white;
+    width: 120px;
+    height: 40px;
+}

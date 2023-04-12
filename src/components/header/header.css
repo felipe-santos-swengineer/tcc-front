@@ -1,0 +1,48 @@
+.header_content_home {
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    background-color: #003A65;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 2px solid #FFB400;
+    padding-bottom: 3px;
+}
+
+.title_header_home {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    width: 140px;
+    min-width: 140px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-family: "Brush Script MT", cursive;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}
+
+.div_icon_header_home{
+    width: 50px;
+    min-width: 50px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+}
+
+.icon_header_home {
+    cursor: pointer;
+    color: white; 
+}.icon_header_home:hover {
+    color: gray;
+}
