@@ -4,13 +4,17 @@
 }
 
 .publicationsHome {
-    padding-top: 30px;
+    background-color: #003A65;
+    padding-top: 60px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     width: 100%;
     max-width: 1024px;
 }
 
 .publicacaoHome{
+    background-color: white;
+    margin-bottom: 50px;
+    border-radius: 25px;
     border: 1px solid black; 
     margin: 20px;
 }

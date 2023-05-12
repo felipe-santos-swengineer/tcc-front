@@ -6,18 +6,15 @@ import Header from "../../components/header/Header";
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import Button from '@material-ui/core/Button';
 import LikeIcon from '@material-ui/icons/ThumbUp';
-import ShareIcon from '@material-ui/icons/Share';
 import CommentIcon from '@material-ui/icons/Textsms';
 import SendIcon from '@material-ui/icons/Send';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import SvgIcon from "@material-ui/core/SvgIcon";
+import Tooltip from '@material-ui/core/Tooltip';
 import Modal from '@material-ui/core/Modal';
-import { ReactComponent as Whats } from './icons/whats.svg';
-import { ReactComponent as Facebook } from './icons/facebook.svg';
-import { ReactComponent as Linkedin } from './icons/linkedin.svg';
+import BtnCompartilhar from "../../components/btn_share/Btn_Share";
 import "./home.css";
 
 function getModalStyle() {
@@ -78,26 +75,6 @@ export default function Home() {
     function share(api_url) {
         window.open(api_url + link, '_blank', 'noopener,noreferrer');
     }
-
-    const body = (
-        <div style={modalStyle} className={classes.paper}>
-            <div>Compartilhar com:</div>
-            <div style={{ marginTop: "10px" }}>
-                <SvgIcon style={{ fontSize: "50px", cursor: "pointer", marginRight: "10px" }} onClick={() => share("https://api.whatsapp.com/send?text=")}>
-                    <Whats />
-                </SvgIcon>
-                <SvgIcon style={{ fontSize: "50px", cursor: "pointer", marginRight: "10px" }} onClick={() => share("https://www.facebook.com/sharer/sharer.php?u=")}>
-                    <Facebook />
-                </SvgIcon>
-                <SvgIcon style={{ fontSize: "50px", cursor: "pointer" }} onClick={() => share("https://www.linkedin.com/shareArticle?mini=true&url=")}>
-                    <Linkedin />
-                </SvgIcon>
-            </div>
-            <div style={{ marginTop: "10px" }}>Ou:</div>
-            <div>{link}</div>
-
-        </div>
-    );
 
     const body2 = (
         <div style={modalStyle} className={classes.paper}>
@@ -223,19 +200,6 @@ export default function Home() {
     return (
         <div className="root">
             <Header />
-            {open
-                ?
-                <Modal
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                >
-                    {body}
-                </Modal>
-                :
-                <></>
-            }
             {open2
                 ?
                 <Modal
@@ -251,7 +215,6 @@ export default function Home() {
             }
             <div className="contentHome">
                 <div className="publicationsHome">
-
                     {publicacoes.length > 0
                         ?
                         <div>
@@ -259,13 +222,17 @@ export default function Home() {
                                 <div className="publicacaoHome">
                                     <div className="publicacaoCabecalhoHome">
                                         <div className="publicacaoFotoHome"></div>
-                                        <div style={{ width: "70%" }}>                                            
+                                        <div style={{ width: "70%" }}>
                                             <div className="publicacaoNomeHome">{publicacao.nome}</div>
                                             <div className="publicacaoDataHome">{getData(publicacao.data_criacao)}</div>
                                         </div>
+
                                         <div className="publicationReportHome">
-                                            <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen2(true)} />
+                                            <Tooltip title="Denunciar">
+                                                <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen2(true)} />
+                                            </Tooltip>
                                         </div>
+
                                     </div>
                                     <div className="publicacaoConteudoHome">{parse(publicacao.conteudo)}</div>
                                     <div className="publicacaoBotoesHome">
@@ -291,13 +258,7 @@ export default function Home() {
                                         >
                                             {"Comentarios (" + publicacao.comentarios.length + ")"}
                                         </ColorButton>
-                                        <ColorButton
-                                            startIcon={<ShareIcon />}
-                                            onClick={() => openShare(publicacao.id)}
-                                        >
-                                            Compartilhar
-                                        </ColorButton>
-
+                                        <BtnCompartilhar id={publicacao.id} />
                                         <ColorButton
                                             startIcon={<SendIcon />}
 
@@ -306,7 +267,7 @@ export default function Home() {
                                         </ColorButton>
                                     </div>
                                     {publicacao.openComentarios
-                                        ? <div style={{ border: "1px solid black" }}>
+                                        ? <div>
                                             {publicacao.comentarios.map((comentario) =>
                                                 <Paper elevation={12} className="comentarioHome">
                                                     <div className="autorComentarioHome">{comentario.nome + " em " + getData(comentario.data_criacao)}</div>

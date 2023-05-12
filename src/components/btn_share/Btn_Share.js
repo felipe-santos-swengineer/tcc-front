@@ -7,6 +7,7 @@ import { ReactComponent as Share } from './share.svg';
 import { ReactComponent as Whats } from './whats.svg';
 import { ReactComponent as Facebook } from './facebook.svg';
 import { ReactComponent as Linkedin } from './linkedin.svg';
+import portas from '../../portas';
 
 function getModalStyle() {
     const top = 50;
@@ -32,13 +33,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ColorButton = withStyles((theme) => ({
     root: {
-        width: "173px",
-        color: "#405965",
-        backgroundColor: "#FFFFFF",
-        border: "solid 2px",
+        marginLeft: "5px",
+        marginRight: "5px",
+        color: "black",
+        backgroundColor: "transparent",
         '&:hover': {
-            backgroundColor: "rgb(253, 204, 9, 0.25)",
-            color: "#20764B"
+            backgroundColor: "transparent",
         },
     },
 }))(Button);
@@ -46,31 +46,30 @@ const ColorButton = withStyles((theme) => ({
 export default function BtnCompartilhar(props) {
 
     const classes = useStyles();
-    // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = useState(false);
 
 
-    function share(api_url){
-        window.open(api_url + props.link, '_blank', 'noopener,noreferrer');
+    function share(api_url) {
+        window.open(api_url + portas().clientHost + "/" + props.id, '_blank', 'noopener,noreferrer');
     }
 
     const body = (
         <div style={modalStyle} className={classes.paper}>
             <div>Compartilhar com:</div>
-            <div style={{marginTop: "10px"}}>
+            <div style={{ marginTop: "10px" }}>
                 <SvgIcon style={{ fontSize: "50px", cursor: "pointer", marginRight: "10px" }} onClick={() => share("https://api.whatsapp.com/send?text=")}>
                     <Whats />
                 </SvgIcon>
                 <SvgIcon style={{ fontSize: "50px", cursor: "pointer", marginRight: "10px" }} onClick={() => share("https://www.facebook.com/sharer/sharer.php?u=")}>
                     <Facebook />
                 </SvgIcon>
-                <SvgIcon style={{ fontSize: "50px", cursor: "pointer"  }} onClick={() => share("https://www.linkedin.com/shareArticle?mini=true&url=")}>
+                <SvgIcon style={{ fontSize: "50px", cursor: "pointer" }} onClick={() => share("https://www.linkedin.com/shareArticle?mini=true&url=")}>
                     <Linkedin />
                 </SvgIcon>
             </div>
-            <div style={{marginTop: "10px"}}>Ou:</div>
-            <div>{props.link}</div>
+            <div style={{ marginTop: "10px" }}>Ou via link direto:</div>
+            <div>{portas().clientHost + "/" + props.id}</div>
 
         </div>
     );
@@ -99,6 +98,5 @@ export default function BtnCompartilhar(props) {
                 Compartilhar
             </ColorButton>
         </div>
-
     )
 }

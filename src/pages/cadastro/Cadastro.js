@@ -189,11 +189,11 @@ export default function Cadastro() {
                   id="demo-simple-select-outlined"
                   value={sexo}
                   onChange={handleChange}
-                  label="Gênero"
+                  label="Gï¿½nero"
                 >
                   <MenuItem value="Masculino">Masculino</MenuItem>
                   <MenuItem value="Feminino">Feminino</MenuItem>
-                  <MenuItem value="Outros / Prefiro não dizer">Outros / Prefiro não dizer</MenuItem>
+                  <MenuItem value="Outros / Prefiro nï¿½o dizer">Outros / Prefiro nï¿½o dizer</MenuItem>
                 </Select>
               </FormControl>
             </div>
@@ -257,7 +257,7 @@ export default function Cadastro() {
               className={classes.submit}
               onClick={() => validar_cadastro()}
             >
-              Entrar
+              Cadastrar
             </Button>
           </div>
         </div>

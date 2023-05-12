@@ -71,67 +71,74 @@ export default function Publication() {
     }
 
     return (
-            <div className="root">
-                <Header />
-                <div className="publication">
-                    <div className="titleCreatePublication">Criar Publicação</div>
-                    <CKEditor
-                        data={editorData}
-                        id="editor_home"
-                        name="editor_home"
-                        onChange={event => { update(event) }}
-                        config={{
-                            contentsCss: [
-                                'http://cdn.ckeditor.com/4.19.1/full-all/contents.css',
-                                'https://ckeditor.com/docs/ckeditor4/4.19.1/examples/assets/css/widgetstyles.css'
-                            ],
-                            language: 'pt-br',
-                            embed_provider: '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}',
-                            uiColor: '#FFFFFF',
-                            toolbarCanCollapse: false,
-                            toolbarGroups: [
-                                { name: 'clipboard', groups: ['clipboard', 'undo'] },
-                                { name: 'styles', groups: ['styles'] },
-                                { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
-                                { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
-                                { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
-                                { name: 'links', groups: ['links'] },
-                                { name: 'insert', groups: ['insert'] },
-                                { name: 'forms', groups: ['forms'] },
-                                { name: 'document', groups: ['mode', 'document', 'doctools'] },
-                                { name: 'others', groups: ['others'] },
-                                { name: 'colors', groups: ['colors'] },
-                                { name: 'about', groups: ['about'] },
-                                { name: 'tools', groups: ['tools'] }
-                            ],
-                            extraPlugins: 'justify, font, embed, autoembed',
-                            removeButtons: 'FontSize,Subscript,Superscript,Scayt,PasteText,PasteFromWord,Anchor,Strike,RemoveFormat,About,Styles'
-                        }}
-                        onInstanceReady={() => {
+        <div className="root">
+            <Header />
+            <div className="publication">
+                <div className="titleCreatePublication">Criar Publicação</div>
+                <CKEditor
+                    data={editorData}
+                    id="editor_home"
+                    name="editor_home"
+                    onChange={event => { update(event) }}
+                    config={{
+                        contentsCss: [
+                            'http://cdn.ckeditor.com/4.19.1/full-all/contents.css',
+                            'https://ckeditor.com/docs/ckeditor4/4.19.1/examples/assets/css/widgetstyles.css'
+                        ],
+                        language: 'pt-br',
+                        embed_provider: '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}',
+                        uiColor: '#FFFFFF',
+                        toolbarCanCollapse: false,
+                        toolbarGroups: [
+                            { name: 'clipboard', groups: ['clipboard', 'undo'] },
+                            { name: 'styles', groups: ['styles'] },
+                            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                            { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
+                            { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+                            { name: 'links', groups: ['links'] },
+                            { name: 'insert', groups: ['insert'] },
+                            { name: 'forms', groups: ['forms'] },
+                            { name: 'document', groups: ['mode', 'document', 'doctools'] },
+                            { name: 'others', groups: ['others'] },
+                            { name: 'colors', groups: ['colors'] },
+                            { name: 'about', groups: ['about'] },
+                            { name: 'tools', groups: ['tools'] }
+                        ],
+                        extraPlugins: 'justify, font, embed, autoembed',
+                        removeButtons: 'FontSize,Subscript,Superscript,Scayt,PasteText,PasteFromWord,Anchor,Strike,RemoveFormat,About,Styles'
+                    }}
+                    onInstanceReady={() => {
 
-                        }}
-                    />
-                    <div className="previewPublication">Pré visualização:</div>
-                    <div className="publicationField">{parse(editorData)}
-                        {
-                            editorData.length > 0
-                                ?
-                                <div className='buttonsEndPublication'>
-                                    <ColorButton variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={() => publicar()}>
-                                        Publicar
-                                    </ColorButton>
-                                    <ColorButton1 variant="contained" color="primary" onClick={() => window.location = "/home"}>
-                                        Cancelar
-                                    </ColorButton1>
+                    }}
+                />
+                {editorData.length > 0
+                    ?
+                    <div>
+                        <div className="previewPublication">Pré visualização:</div>
+                        <div className="publicationField">{parse(editorData)}
+                            {
+                                editorData.length > 0
+                                    ?
+                                    <div className='buttonsEndPublication'>
+                                        <ColorButton variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={() => publicar()}>
+                                            Publicar
+                                        </ColorButton>
+                                        <ColorButton1 variant="contained" color="primary" onClick={() => window.location = "/home"}>
+                                            Cancelar
+                                        </ColorButton1>
 
-                                </div>
-                                :
-                                <></>
-                        }
+                                    </div>
+                                    :
+                                    <></>
+                            }
+                        </div>
                     </div>
-                </div>
+                    :
+                    <></>
+                }
             </div>
-  
+        </div>
+
     )
 
 }

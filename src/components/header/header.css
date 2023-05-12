@@ -9,6 +9,11 @@
     padding-bottom: 3px;
 }
 
+.inputRounded .MuiOutlinedInput-root {
+    border-radius: 20px;
+    background-color: white;
+}
+
 .title_header_home {
     display: flex;
     justify-content: center;
@@ -30,7 +35,7 @@
     cursor: pointer;
 }
 
-.div_icon_header_home{
+.div_icon_header_home {
     width: 50px;
     min-width: 50px;
     display: flex;
@@ -42,7 +47,9 @@
 
 .icon_header_home {
     cursor: pointer;
-    color: white; 
-}.icon_header_home:hover {
+    color: white;
+}
+
+.icon_header_home:hover {
     color: gray;
 }

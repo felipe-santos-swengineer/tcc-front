@@ -1,0 +1,99 @@
+.perfilCapa {
+    height: 250px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.perfilFotoDiv {
+    width: 200px;
+    height: 200px;
+    background-color: red;
+    border-radius: 50%;
+    border: 4px solid white;
+}
+
+.perfilFoto {
+    background-color: red;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 200px;
+    height: 200px;
+}
+
+.perfilInfos {
+    padding-top: 60px;
+    margin-left: 10px;
+
+}
+
+.perfilInfos {
+    padding-top: 60px;
+    margin-left: 10px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.perfilNome {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.align {
+    display: flex;
+    justify-content: left;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+}
+
+.perfilTag1 {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF0000;
+}
+
+.perfilTag2 {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF7F00;
+}
+
+.perfilTag3 {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00FF00;
+}
+
+.perfilTag4 {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00FFFF;
+}
+
+.perfilTag5 {
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #8B00FF;
+}
+
+.textAboutPerfil {
+    margin-left: 10px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 16px;
+    color: black;
+}
+
+.infoDivPerfil {
+    display: flex;
+    margin: 20px;
+    justify-items: center;
+    align-items: center;
+}

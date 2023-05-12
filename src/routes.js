@@ -10,6 +10,8 @@ import VerificarEmail from './pages/verificarEmail/verificarEmail';
 import Home from "./pages/home/Home";
 import Amigos from './pages/amigos/Amigos';
 import Create_Publication from "./components/create_publication/publication";
+import Perfil from "./pages/perfil/meuPerfil/Perfil";
+import PerfilView from "./pages/perfil/perfilView/PerfilView";
 
 //auth
 import StoreProvider from './components/Store/Provider';
@@ -26,6 +28,8 @@ export default function Routes() {
                     <PrivateRoute path="/home" component={Home} />
                     <PrivateRoute path="/amigos" component={Amigos} />
                     <PrivateRoute path="/criarPublicacao" component={Create_Publication} />  
+                    <PrivateRoute path="/meuPerfil" component={Perfil} />
+                    <PrivateRoute path="/perfil" component={PerfilView} />    
                 </Switch>
             </StoreProvider>
         </BrowserRouter>
