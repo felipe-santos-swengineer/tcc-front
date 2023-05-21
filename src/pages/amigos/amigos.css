@@ -62,6 +62,16 @@
     align-items: center;
 }
 
+.tituloSolicitacoes {
+    margin: 10px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 16px;
+    color: black;
+}
+
 .nomePessoaPainelAmigos {
     margin: 10px;
 }
