@@ -15,6 +15,8 @@ import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import Modal from '@material-ui/core/Modal';
 import BtnCompartilhar from "../../components/btn_share/Btn_Share";
+import Avatar from '@material-ui/core/Avatar';
+import Profile from "../../components/img/profile.png";
 import "./home.css";
 
 function getModalStyle() {
@@ -164,8 +166,16 @@ export default function Home() {
         if (token !== null) {
             try {
 
-                const body = { usertoken: token };
-                const response = await fetch(Portas().serverHost + "/getPublicacao", {
+                //rota de publicações gerais
+                var rota = Portas().serverHost + "/getPublicacao"
+                var body = { usertoken: token };
+
+                if (window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== 'home' && window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== '') {
+                    //rota de publicação especifica
+                    rota = Portas().serverHost + "/getByIdPub2"
+                    body = { usertoken: token, id: window.location.href.substring(window.location.href.lastIndexOf("/") + 1) };
+                }
+                const response = await fetch(rota, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(body)
@@ -221,7 +231,12 @@ export default function Home() {
                             {publicacoes.map((publicacao, index) =>
                                 <div className="publicacaoHome">
                                     <div className="publicacaoCabecalhoHome">
-                                        <div className="publicacaoFotoHome"></div>
+                                        {publicacao.img !== null
+                                            ?
+                                            <Avatar alt="Imagem de perfil" src={publicacao.img} className={classes.avatar} />
+                                            :
+                                            <Avatar alt="Imagem de perfil" src={Profile} className={classes.avatar} />
+                                        }
                                         <div style={{ width: "70%" }}>
                                             <div className="publicacaoNomeHome">{publicacao.nome}</div>
                                             <div className="publicacaoDataHome">{getData(publicacao.data_criacao)}</div>

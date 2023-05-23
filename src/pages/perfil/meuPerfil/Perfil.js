@@ -214,15 +214,6 @@ export default function Perfil() {
 
                 var resJSON = await response.json();
 
-                //filtro id
-                var aux = []
-                for (var i = 0; i < resJSON.length; i++) {
-                    if (resJSON[i].usertoken === token) {
-                        aux.push(resJSON[i])
-                    }
-                }
-                resJSON = aux
-
                 //mantem abas comentarios abertos
                 if (publicacoes.length > 0) {
                     for (var i = 0; i < resJSON.length; i++) {

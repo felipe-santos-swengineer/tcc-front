@@ -51,7 +51,7 @@ export default function BtnCompartilhar(props) {
 
 
     function share(api_url) {
-        window.open(api_url + portas().clientHost + "/" + props.id, '_blank', 'noopener,noreferrer');
+        window.open(api_url + portas().clientHost + "/home/" + props.id, '_blank', 'noopener,noreferrer');
     }
 
     const body = (
@@ -69,7 +69,7 @@ export default function BtnCompartilhar(props) {
                 </SvgIcon>
             </div>
             <div style={{ marginTop: "10px" }}>Ou via link direto:</div>
-            <div>{portas().clientHost + "/" + props.id}</div>
+            <div>{portas().clientHost + "/home/" + props.id}</div>
 
         </div>
     );
