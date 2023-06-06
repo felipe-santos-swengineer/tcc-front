@@ -17,7 +17,6 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DoneIcon from '@material-ui/icons/Done';
-
 import "./amigos.css";
 
 
@@ -76,27 +75,6 @@ export default function Home() {
         }
     }
 
-    const adicionarAmigo = async (id) => {
-        if (token !== null) {
-            try {
-                const body = { usertoken: token, to_id: id };
-                const response = await fetch(Portas().serverHost + "/adicionarAmigos", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body)
-                });
-
-                var resJSON = await response.json();
-                console.log(resJSON)
-                getNaoAmigos()
-
-            } catch (err) {
-                console.log(err.message);
-            }
-
-        }
-    }
-
     const getSolicitacoes = async () => {
         if (token !== null) {
             try {
@@ -113,6 +91,52 @@ export default function Home() {
                 if (resJSON.length > 0) {
                     setSolicitacoes(resJSON)
                 }
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
+    const adicionarAmigo = async (id) => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token, to_id: id };
+                const response = await fetch(Portas().serverHost + "/adicionarAmigos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                getAmigos()
+                getNaoAmigos()
+                getSolicitacoes()
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
+    const removerAmigo = async (id) => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token, to_id: id };
+                const response = await fetch(Portas().serverHost + "/removerAmigos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                getAmigos()
+                getNaoAmigos()
+                getSolicitacoes()
 
             } catch (err) {
                 console.log(err.message);
@@ -172,12 +196,12 @@ export default function Home() {
                                             <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
                                             <div className="divOpcoesPainelAmigos">
                                                 <Tooltip title="Ver perfil">
-                                                    <IconButton style={{color: "blue"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                    <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
                                                         <AccountBoxIcon />
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Adicionar">
-                                                    <IconButton style={{color: "#008240"}} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
+                                                    <IconButton style={{ color: "#008240" }} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
                                                         <AddIcon />
                                                     </IconButton>
                                                 </Tooltip>
@@ -208,7 +232,7 @@ export default function Home() {
                                             <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
                                             <div className="divOpcoesPainelAmigos">
                                                 <Tooltip title="Ver perfil">
-                                                    <IconButton style={{color: "blue"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                    <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
                                                         <AccountBoxIcon />
                                                     </IconButton>
                                                 </Tooltip>
@@ -217,8 +241,8 @@ export default function Home() {
                                                         <ChatIcon />
                                                     </IconButton>
                                                 </Tooltip>
-                                                <Tooltip title="Remover">
-                                                    <IconButton style={{color: "red"}} type="submit" aria-label="search">
+                                                <Tooltip title="Remover" >
+                                                    <IconButton style={{ color: "red" }} type="submit" aria-label="search" onClick={() => removerAmigo(pessoa.id)}>
                                                         <DeleteIcon />
                                                     </IconButton>
                                                 </Tooltip>
@@ -250,17 +274,17 @@ export default function Home() {
                                                 <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
                                                 <div className="divOpcoesPainelAmigos">
                                                     <Tooltip title="Ver perfil">
-                                                        <IconButton style={{color: "blue"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                        <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
                                                             <AccountBoxIcon />
                                                         </IconButton>
                                                     </Tooltip>
                                                     <Tooltip title="Aceitar solicitação">
-                                                        <IconButton style={{color: "#008240"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                        <IconButton style={{ color: "#008240" }} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
                                                             <DoneIcon />
                                                         </IconButton>
                                                     </Tooltip>
                                                     <Tooltip title="Recusar solicitação">
-                                                        <IconButton style={{color: "red"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                        <IconButton style={{ color: "red" }} type="submit" aria-label="search" onClick={() => removerAmigo(pessoa.id)}>
                                                             <CancelIcon />
                                                         </IconButton>
                                                     </Tooltip>
@@ -281,12 +305,12 @@ export default function Home() {
                                                 <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
                                                 <div className="divOpcoesPainelAmigos">
                                                     <Tooltip title="Ver perfil">
-                                                        <IconButton style={{color: "blue"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                        <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
                                                             <AccountBoxIcon />
                                                         </IconButton>
                                                     </Tooltip>
                                                     <Tooltip title="Cancelar solicitação">
-                                                        <IconButton style={{color: "red"}} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                        <IconButton style={{ color: "red" }} type="submit" aria-label="search" onClick={() => removerAmigo(pessoa.id)}>
                                                             <CancelIcon />
                                                         </IconButton>
                                                     </Tooltip>

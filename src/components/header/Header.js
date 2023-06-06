@@ -42,7 +42,7 @@ export default function Header() {
                     </div>
                 </Tooltip>
                 <Tooltip title="Chat">
-                    <div className="div_icon_header_home">
+                    <div className="div_icon_header_home" onClick={() => window.location = "/chat"}>
                         <ChatIcon className="icon_header_home" />
                     </div>
                 </Tooltip>

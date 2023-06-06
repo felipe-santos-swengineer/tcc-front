@@ -1,0 +1,28 @@
+.chatList {
+    background-color: white;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}
+
+.chatItem {
+}
+
+.chatList:hover{
+    background-color: gray;
+}
+
+.chatIcon {
+    margin: 5px;
+}
+
+.chatGroupTitle {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.chatGroupParticipantes {
+    font-weight: bold;
+}

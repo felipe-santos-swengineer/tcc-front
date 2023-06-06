@@ -12,6 +12,7 @@ import Amigos from './pages/amigos/Amigos';
 import Create_Publication from "./components/create_publication/publication";
 import Perfil from "./pages/perfil/meuPerfil/Perfil";
 import PerfilView from "./pages/perfil/perfilView/PerfilView";
+import Chat from "./pages/chat/Chat";
 
 //auth
 import StoreProvider from './components/Store/Provider';
@@ -29,7 +30,8 @@ export default function Routes() {
                     <PrivateRoute path="/amigos" component={Amigos} />
                     <PrivateRoute path="/criarPublicacao" component={Create_Publication} />  
                     <PrivateRoute path="/meuPerfil" component={Perfil} />
-                    <PrivateRoute path="/perfil" component={PerfilView} />    
+                    <PrivateRoute path="/perfil" component={PerfilView} />
+                    <PrivateRoute path="/chat" component={Chat} />        
                 </Switch>
             </StoreProvider>
         </BrowserRouter>

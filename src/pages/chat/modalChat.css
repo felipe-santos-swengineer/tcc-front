@@ -1,0 +1,55 @@
+.chatHeader {
+    background-color: white;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border-bottom: 1px solid black;
+    margin-bottom: 30px;
+}
+
+.mensagemOutro {
+    display: flex;
+    justify-items: center;
+    margin-top: 10px;
+}
+
+.ballonOutro {
+    background-color: #b5ba65;
+    padding: 10px;
+    border-radius: 25px;
+
+}
+
+.timeOutro {
+    padding: 10px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 16px;
+    opacity: 30%;
+}
+
+.mensagemPessoal {
+    justify-items: center;
+    display: flex;
+    flex-direction: row-reverse;
+    margin-top: 10px;
+}
+
+.ballonPessoal {
+    background-color: #b5ba65;
+    padding: 10px;
+    border-radius: 25px;
+
+}
+
+.timePessoal {
+    padding: 10px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 16px;
+    opacity: 30%;
+}
