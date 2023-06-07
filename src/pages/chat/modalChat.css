@@ -1,24 +1,59 @@
+.chatBox {
+    padding: 10px;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 867px;
+    margin: 25px 10px;
+    height: calc(100% - 50px);
+    border: var(--border);
+    border-radius: 5px;
+    background: white;
+    box-shadow: 0 15px 15px -5px rgba(0, 0, 0, 0.2);
+}
+
 .chatHeader {
-    background-color: white;
     display: flex;
     justify-items: center;
     align-items: center;
     border-bottom: 1px solid black;
-    margin-bottom: 30px;
+    background-color: #b5ba65;
+
+}
+
+.mensagensChat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.mensagemInput {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .mensagemOutro {
     display: flex;
     justify-items: center;
     margin-top: 10px;
+    text-align: left;
 }
 
 .ballonOutro {
-    background-color: #b5ba65;
+    background-color: #ececec;
     padding: 10px;
     border-radius: 25px;
-
 }
+
+.userNameOutro {
+    font-weight: bold;
+    font-size: 15px;
+    text-align: left;
+}
+
 
 .timeOutro {
     padding: 10px;
@@ -38,7 +73,7 @@
 }
 
 .ballonPessoal {
-    background-color: #b5ba65;
+    background-color: #579ffb;
     padding: 10px;
     border-radius: 25px;
 
@@ -52,4 +87,8 @@
     font-size: 10px;
     line-height: 16px;
     opacity: 30%;
+}
+
+.iconSendMsg:hover {
+    cursor: pointer;
 }

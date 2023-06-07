@@ -62,6 +62,10 @@ export default function MiniDrawer() {
         return participantes
     }
 
+    function handleGrupoClick(grupo_id) {
+        setSelectedGrupo(grupo_id)
+        setOpenChatGrupo(!openChatGrupo)
+    }
 
 
     useEffect(() => {
@@ -93,8 +97,7 @@ export default function MiniDrawer() {
                     open={openChatGrupo}
                     setOpen={() => setOpenChatGrupo(!openChatGrupo)}
                     type={'grupo'}
-                    grupo={selectedGrupo}
-                    privado={selectedPrivado}
+                    id={selectedGrupo}
                 ></ModalChat>
             ) : (
                 <></>
@@ -104,8 +107,7 @@ export default function MiniDrawer() {
                     open={openChatPrivado}
                     setOpen={() => setOpenChatPrivado(!openChatPrivado)}
                     type={'privado'}
-                    grupo={selectedGrupo}
-                    privado={selectedPrivado}
+                    id={selectedPrivado}
                 ></ModalChat>
             ) : (
                 <></>
@@ -125,7 +127,7 @@ export default function MiniDrawer() {
                         ?
                         <div>
                             {grupos.map((grupo, index) =>
-                                <div className="chatList" onClick={() => setOpenChatGrupo(true)}>
+                                <div className="chatList" onClick={() => handleGrupoClick(grupo.id)}>
                                     <div className="chatItem">
                                         <div className="chatIcon">
                                             <Avatar alt="Imagem de perfil" src={Group} />
