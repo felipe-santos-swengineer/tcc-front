@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import ModalCriarConversa from "./ModalCriarConversa";
+import Profile from "../../components/img/profile.png";
 import ModalChat from "./ModalChat";
 import Portas from '../../portas';
 import StoreContext from "../../components/Store/Context";
@@ -29,6 +30,7 @@ export default function MiniDrawer() {
     const [openCreateGp, setOpenCreateGp] = React.useState(false);
     const [openCreateCp, setOpenCreateCp] = React.useState(false);
     const [grupos, setGrupos] = React.useState([])
+    const [privados, setPrivados] = React.useState([])
     const [openChatGrupo, setOpenChatGrupo] = React.useState(false);
     const [openChatPrivado, setOpenChatPrivado] = React.useState(false);
     const [selectedGrupo, setSelectedGrupo] = React.useState(1);
@@ -54,6 +56,26 @@ export default function MiniDrawer() {
         }
     }
 
+    const getPrivados = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/getChatPrivado", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                setPrivados(resJSON)
+
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
     function getParticipantesGp(grupo) {
         var participantes = 'Eu'
         for (var i = 0; i < grupo.participantes.length; i++) {
@@ -67,9 +89,14 @@ export default function MiniDrawer() {
         setOpenChatGrupo(!openChatGrupo)
     }
 
+    function handlePrivadoClick(privado_id) {
+        setSelectedPrivado(privado_id)
+        setOpenChatPrivado(!openChatPrivado)
+    }
 
     useEffect(() => {
         getGrupos();
+        getPrivados();
     }, []);
 
     return (
@@ -108,14 +135,15 @@ export default function MiniDrawer() {
                     setOpen={() => setOpenChatPrivado(!openChatPrivado)}
                     type={'privado'}
                     id={selectedPrivado}
+                    privado={privados}
                 ></ModalChat>
             ) : (
                 <></>
             )}
             <Header />
-            <div className="contentHome">
-                <div className="publicationsHome" style={{ marginTop: "30px" }}>
-                    <div className='buttonsEndPublication'>
+            <div className="contentHome" >
+                <div className="publicationsHome" style={{ marginTop: "30px", backgroundColor: "white" }}>
+                    <div className='buttonsEndPublication' style={{ paddingBottom: "25px" }}>
                         <ColorButton variant="contained" color="primary" endIcon={<AddIcon></AddIcon>} onClick={() => setOpenCreateGp(true)}>
                             Criar grupo
                         </ColorButton>
@@ -125,7 +153,8 @@ export default function MiniDrawer() {
                     </div>
                     {grupos.length > 0
                         ?
-                        <div>
+                        <div style={{ backgroundColor: "white" }}>
+                            <div className="tituloSolicitacoes" style={{ width: "100%", paddingTop: "10px" }}>{"Grupos (" + grupos.length + ")"}</div>
                             {grupos.map((grupo, index) =>
                                 <div className="chatList" onClick={() => handleGrupoClick(grupo.id)}>
                                     <div className="chatItem">
@@ -139,6 +168,35 @@ export default function MiniDrawer() {
                                         </div>
                                         <div className='chatGroupParticipantes'>
                                             {getParticipantesGp(grupo)}
+                                        </div>
+                                        <div className='chatLastMsg'>
+                                            João: E ai?
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        :
+                        <></>
+                    }
+                    {privados.length > 0
+                        ?
+                        <div style={{ backgroundColor: "white" }}>
+                            <div className="tituloSolicitacoes" style={{ width: "100%", paddingTop: "10px" }}>{"Conversas privadas (" + privados.length + ")"}</div>
+                            {privados.map((privado, index) =>
+                                <div className="chatList" onClick={() => handlePrivadoClick(privado.id)}>
+                                    <div className="chatItem">
+                                        <div className="chatIcon">
+                                            {privado.foto.length > 0 ?
+                                                <Avatar alt="Imagem de perfil" src={privado.foto[0].img_json.img} />
+                                                :
+                                                <Avatar alt="Imagem de perfil" src={Profile} />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div style={{ margin: '5px' }} >
+                                        <div className='chatGroupTitle'>
+                                            {privado.participante[0].nome}
                                         </div>
                                         <div className='chatLastMsg'>
                                             João: E ai?

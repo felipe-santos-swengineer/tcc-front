@@ -146,6 +146,34 @@ export default function TransitionsModal({ open, setOpen, type }) {
                 if (resJSON === 'Grupo Inserido!') {
                     window.location.reload(false)
                 }
+                else {
+                    alert('Uma falha ocorreu')
+                }
+
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
+    const criarConversa = async (index) => {
+        if (token !== null) {
+            try {
+
+                const body = { usertoken: token, amigoId: amigos[index].id };
+                const response = await fetch(Portas().serverHost + "/criarChatPrivado", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                if (resJSON === 'Conversa Inserida!') {
+                    window.location.reload(false)
+                }
+                else {
+                    alert('Uma falha ocorreu')
+                }
 
             } catch (err) {
                 console.log(err.message);
@@ -239,8 +267,8 @@ export default function TransitionsModal({ open, setOpen, type }) {
                                     {amigos.map((amigo, index) => {
                                         const labelId = `checkbox-list-secondary-label-${index}`;
                                         return (
-                                            <ListItem key={index} button>
-                                                <ListItemAvatar>
+                                            <ListItem key={index} button onClick={() => criarConversa(index)}>
+                                                <ListItemAvatar >
                                                     <Avatar
                                                         alt={'imagem de perfil'}
                                                         src={amigo.foto}

@@ -43,7 +43,7 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
   const [mensagens, setMensagens] = React.useState([]);
   const [mensagem, setMensagem] = React.useState('');
   const [grupo, setGrupo] = React.useState([]);
-  const [destinatario, setDestinatario] = React.useState([]);
+  const [privado, setPrivado] = React.useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -70,6 +70,28 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
     }
   }
 
+  const getPrivado = async () => {
+    if (token !== null) {
+      try {
+        if (type === 'privado') {
+          const body = { usertoken: token, chatPrivadoId: id };
+          const response = await fetch(Portas().serverHost + "/getChatPrivadoById", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+
+          var resJSON = await response.json();
+          console.log(resJSON)
+          setPrivado(resJSON)
+        }
+
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+  }
+
   const getMensagens = async () => {
     if (token !== null) {
       try {
@@ -82,6 +104,18 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
           });
 
           var resJSON = await response.json();
+          setMensagens(resJSON)
+        }
+        if (type === 'privado') {
+          const body = { usertoken: token, chatPrivado_id: id };
+          const response = await fetch(Portas().serverHost + "/getMensagensPrivado", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+
+          var resJSON = await response.json();
+          console.log(resJSON)
           setMensagens(resJSON)
         }
 
@@ -98,6 +132,20 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
           if (mensagem.trim().length > 1) {
             const body = { usertoken: token, grupo_id: id, mensagem: mensagem };
             const response = await fetch(Portas().serverHost + "/setMensagensGrupo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body)
+            });
+
+            var resJSON = await response.json();
+            getMensagens();
+            setMensagem('')
+          }
+        }
+        if (type === 'privado') {
+          if (mensagem.trim().length > 1) {
+            const body = { usertoken: token, chatPrivado_id: id, mensagem: mensagem };
+            const response = await fetch(Portas().serverHost + "/setMensagensPrivado", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(body)
@@ -125,6 +173,7 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
 
   useEffect(() => {
     getGrupo();
+    getPrivado();
     getMensagens();
     const interval = setInterval(() => {
       getMensagens();
@@ -162,6 +211,78 @@ export default function TransitionsModal({ open, setOpen, type, id }) {
                   </div>
                   <div className='chatGroupParticipantes'>
                     {getParticipantesGp(grupo[0])}
+                  </div>
+                </div>
+              </div>
+              {mensagens.length > 0
+                ?
+                <div className='mensagensChat'>
+                  {mensagens.map((mensagem, index) =>
+                    <div className={mensagem.self ? 'mensagemPessoal' : 'mensagemOutro'}>
+                      <div className="chatIcon">
+                        {mensagem.hasOwnProperty('foto')
+                          ?
+                          <Avatar alt="Imagem de perfil" src={mensagem.foto} />
+                          :
+                          <Avatar alt="Imagem de perfil" src={Profile} />
+                        }
+                      </div>
+                      <div>
+                        <div className={mensagem.self ? 'ballonPessoal' : 'ballonOutro'}>
+                          {mensagem.self === false
+                            ?
+                            <div className='userNameOutro'>{mensagem.nome}</div>
+                            : <></>
+                          }
+                          <div>{mensagem.conteudo}</div>
+                        </div>
+                        <div className={mensagem.self ? 'timePessoal' : 'timeOutro'}>{mensagem.data_criacao}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                :
+                <div className='mensagensChat' />
+              }
+              <div className='mensagemInput'>
+                <TextField value={mensagem} onChange={(event) => setMensagem(event.target.value)} label="Adicionar mensagem" variant="filled" fullWidth />
+                <AddCircleIcon className='iconSendMsg' style={{ fontSize: 40 }} onClick={() => sendMensagem()} />
+              </div>
+            </div>
+          </Fade>
+        </Modal>
+        : <></>
+      }
+      {type === 'privado' && privado.length > 0
+        ?
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <div className='chatBox'>
+              <div className='chatHeader'>
+                <div className="chatItem">
+                  <div className="chatIcon">
+                    {privado[0].foto.length > 0
+                      ?
+                      <Avatar alt="Imagem de perfil" src={privado[0].foto[0].img_json.img} />
+                      :
+                      <Avatar alt="Imagem de perfil" src={Profile} />
+                    }
+                  </div>
+                </div>
+                <div style={{ margin: '5px' }} >
+                  <div className='chatGroupTitle'>
+                    {privado[0].participante[0].nome}
                   </div>
                 </div>
               </div>
