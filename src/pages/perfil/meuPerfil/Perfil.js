@@ -557,7 +557,6 @@ export default function Perfil() {
                                                 centered
                                             >
                                                 <Tab label="Apresentação" />
-                                                <Tab label="Conexões" />
                                                 <Tab label="Publicações" />
                                             </Tabs>
 
@@ -612,7 +611,7 @@ export default function Perfil() {
                                             </div>
                                             : <></>
                                         }
-                                        {value === 2
+                                        {value === 1
                                             ?
                                             <div>
                                                 {publicacoes.length > 0

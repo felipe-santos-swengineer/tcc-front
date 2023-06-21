@@ -25,6 +25,10 @@ import EditLocationIcon from '@material-ui/icons/Edit';
 import Portas from "../../../portas";
 import Chip from '@material-ui/core/Chip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import Avatar from '@material-ui/core/Avatar';
 import "./perfilView.css";
 
@@ -101,6 +105,8 @@ export default function Perfil() {
     const [nomeAux, setNomeAux] = useState("");
     const [cidadeAux, setCidadeAux] = useState("");
     const [sobreAux, setSobreAux] = useState("");
+    const [amigos, setAmigos] = useState([]);
+    const [naoAmigos, setNaoAmigos] = useState([]);
     const [modalStyle] = React.useState(getModalStyle);
     const [value, setValue] = React.useState(0);
     const [publicacoes, setPublicacoes] = useState([]);
@@ -230,6 +236,7 @@ export default function Perfil() {
                     body: JSON.stringify(body1)
                 });
                 var resJSON1 = await response1.json();
+                console.log(resJSON1)
 
                 if (resJSON1.length > 0) {
                     setStoredImage(resJSON1[0].img_json.img)
@@ -265,10 +272,79 @@ export default function Perfil() {
         setValue(newValue);
     };
 
+    const getAmigos = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token, id: window.location.href.substring(window.location.href.lastIndexOf("/") + 1) };
+                const response = await fetch(Portas().serverHost + "/amigosComum", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log("amigos em comum")
+                console.log(resJSON)
+                setAmigos(resJSON)
+
+            } catch (err) {
+                console.log("erro" + err.message);
+            }
+        }
+    }
+
+    const getNaoAmigos = async () => {
+        if (token !== null) {
+            try {
+
+                const body = { usertoken: token, id: window.location.href.substring(window.location.href.lastIndexOf("/") + 1) };
+                const response = await fetch(Portas().serverHost + "/naoAmigosComum", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log("desconhecidos")
+                console.log(resJSON)
+                setNaoAmigos(resJSON)
+
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
+    const adicionarAmigo = async (id) => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token, to_id: id };
+                const response = await fetch(Portas().serverHost + "/adicionarAmigos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                getAmigos()
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
 
     useEffect(() => {
         getUser();
         getPublications();
+        //getNaoAmigos();
+        getAmigos();
+
     }, []);
 
     return (
@@ -370,6 +446,51 @@ export default function Perfil() {
                                                 }
                                             </div>
                                             : <></>
+                                        }
+                                        {value === 1
+                                            ?
+                                            <div>
+                                                <div className="tituloSolicitacoes" style={{ width: "100%", paddingTop: "10px" }}>{"Amigos (" + amigos.length + ")"}</div>
+                                                <div>
+                                                    {amigos.length > 0
+                                                        ?
+                                                        <div className="painelAmigos">
+                                                            {amigos.map((pessoa) =>
+                                                                <div className="divPessoaPainelAmigos">
+                                                                    {pessoa.foto === ''
+                                                                        ?
+                                                                        <Avatar alt="Imagem de perfil" src={Profile} />
+                                                                        :
+                                                                        <Avatar alt="Imagem de perfil" src={pessoa.foto} />
+                                                                    }
+                                                                    <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
+                                                                    <div className="divOpcoesPainelAmigos">
+                                                                        <Tooltip title="Ver perfil">
+                                                                            <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                                                <AccountBoxIcon />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                        {!pessoa.comum
+                                                                            ?
+                                                                            <Tooltip title="Adicionar">
+                                                                                <IconButton style={{ color: "#008240" }} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
+                                                                                    <AddIcon />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                            :
+                                                                            <></>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        : <></>
+                                                    }
+                                                </div>
+                                            </div>
+                                            :
+                                            <></>
+
                                         }
                                         {value === 2
                                             ?

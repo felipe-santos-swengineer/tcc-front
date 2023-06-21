@@ -275,6 +275,7 @@ export default function Home() {
                                         </ColorButton>
                                         <BtnCompartilhar id={publicacao.id} />
                                         <ColorButton
+                                            onClick={() => alert(publicacao.id)}
                                             startIcon={<SendIcon />}
 
                                         >
