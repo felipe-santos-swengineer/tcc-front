@@ -27,6 +27,7 @@ export default function Home() {
     const [naoAmigos, setNaoAmigos] = useState([]);
     const [solicitacoes, setSolicitacoes] = useState([]);
     const [value, setValue] = React.useState(0);
+    const [search, setSearch] = useState('');
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -158,6 +159,8 @@ export default function Home() {
                 <div className="publicationsHome" style={{ backgroundColor: "white" }}>
                     <div className="searchDivAmigos">
                         <InputBase
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
                             className="searchInputAmigos"
                             placeholder="Buscar usuários"
                             inputProps={{ 'aria-label': 'search google maps' }}
@@ -186,26 +189,32 @@ export default function Home() {
                                 ?
                                 <div className="painelAmigos">
                                     {naoAmigos.map((pessoa) =>
-                                        <div className="divPessoaPainelAmigos">
-                                            {pessoa.foto === ''
-                                                ?
-                                                <Avatar alt="Imagem de perfil" src={Profile} />
+                                        <div>
+                                            {pessoa.nome.toLowerCase().indexOf(search.toLowerCase()) > -1 ?
+                                                <div className="divPessoaPainelAmigos">
+                                                    {pessoa.foto === ''
+                                                        ?
+                                                        <Avatar alt="Imagem de perfil" src={Profile} />
+                                                        :
+                                                        <Avatar alt="Imagem de perfil" src={pessoa.foto} />
+                                                    }
+                                                    <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
+                                                    <div className="divOpcoesPainelAmigos">
+                                                        <Tooltip title="Ver perfil">
+                                                            <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                                <AccountBoxIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title="Adicionar">
+                                                            <IconButton style={{ color: "#008240" }} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
+                                                                <AddIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
                                                 :
-                                                <Avatar alt="Imagem de perfil" src={pessoa.foto} />
+                                                <></>
                                             }
-                                            <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
-                                            <div className="divOpcoesPainelAmigos">
-                                                <Tooltip title="Ver perfil">
-                                                    <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
-                                                        <AccountBoxIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Adicionar">
-                                                    <IconButton style={{ color: "#008240" }} type="submit" aria-label="search" onClick={() => adicionarAmigo(pessoa.id)}>
-                                                        <AddIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -222,31 +231,35 @@ export default function Home() {
                                 ?
                                 <div className="painelAmigos">
                                     {amigos.map((pessoa) =>
-                                        <div className="divPessoaPainelAmigos">
-                                            {pessoa.foto === ''
-                                                ?
-                                                <Avatar alt="Imagem de perfil" src={Profile} />
-                                                :
-                                                <Avatar alt="Imagem de perfil" src={pessoa.foto} />
-                                            }
-                                            <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
-                                            <div className="divOpcoesPainelAmigos">
-                                                <Tooltip title="Ver perfil">
-                                                    <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
-                                                        <AccountBoxIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Conversar">
-                                                    <IconButton type="submit" aria-label="search">
-                                                        <ChatIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Remover" >
-                                                    <IconButton style={{ color: "red" }} type="submit" aria-label="search" onClick={() => removerAmigo(pessoa.id)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </div>
+                                        <div>
+                                            {pessoa.nome.toLowerCase().indexOf(search.toLowerCase()) > -1 ?
+                                                <div className="divPessoaPainelAmigos">
+                                                    {pessoa.foto === ''
+                                                        ?
+                                                        <Avatar alt="Imagem de perfil" src={Profile} />
+                                                        :
+                                                        <Avatar alt="Imagem de perfil" src={pessoa.foto} />
+                                                    }
+                                                    <div className="nomePessoaPainelAmigos">{pessoa.nome}</div>
+                                                    <div className="divOpcoesPainelAmigos">
+                                                        <Tooltip title="Ver perfil">
+                                                            <IconButton style={{ color: "blue" }} type="submit" aria-label="search" onClick={() => (window.location = '/perfil/' + pessoa.id)}>
+                                                                <AccountBoxIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title="Conversar">
+                                                            <IconButton type="submit" aria-label="search">
+                                                                <ChatIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        <Tooltip title="Remover" >
+                                                            <IconButton style={{ color: "red" }} type="submit" aria-label="search" onClick={() => removerAmigo(pessoa.id)}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
+                                                : <></>}
                                         </div>
                                     )}
                                 </div>

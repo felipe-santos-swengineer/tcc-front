@@ -170,11 +170,18 @@ export default function Home() {
                 var rota = Portas().serverHost + "/getPublicacao"
                 var body = { usertoken: token };
 
-                if (window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== 'home' && window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== '') {
+                if (window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== 'home' && window.location.href.substring(window.location.href.lastIndexOf("/") + 1) !== '' && window.location.href.indexOf('search=') > -1 === false) {
                     //rota de publicação especifica
                     rota = Portas().serverHost + "/getByIdPub2"
                     body = { usertoken: token, id: window.location.href.substring(window.location.href.lastIndexOf("/") + 1) };
                 }
+
+                if (window.location.href.indexOf('search=') > -1) {
+                    //rota de publicação especifica
+                    rota = Portas().serverHost + "/getByPubSearch"
+                    body = { usertoken: token, search: decodeURI(window.location.href.substring(window.location.href.lastIndexOf("=") + 1)) };
+                }
+
                 const response = await fetch(rota, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -182,7 +189,7 @@ export default function Home() {
                 });
 
                 var resJSON = await response.json();
-
+                console.log(resJSON)
                 //mantem abas comentarios abertos
                 if (publicacoes.length > 0) {
                     for (var i = 0; i < resJSON.length; i++) {
@@ -193,6 +200,7 @@ export default function Home() {
                         }
                     }
                 }
+
                 setPublicacoes(resJSON);
                 console.log(resJSON)
 

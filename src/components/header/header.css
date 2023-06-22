@@ -53,3 +53,13 @@
 .icon_header_home:hover {
     color: gray;
 }
+
+.searchHeader {
+    border-radius: 25px;
+    background-color: white;
+}
+
+.searchInputHeader {
+    padding: 10px;
+    width: 80%;
+}
