@@ -355,7 +355,7 @@ export default function Perfil() {
                     <Header />
                     <div className="contentHome">
                         <div className="publicationsHome">
-                            <div className="perfilHeader">
+                            <div className="perfilHeader" >
                                 <div className="perfilCapa" style={{ backgroundImage: `url("https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg")` }}>
                                     <div style={{ paddingTop: "200px", display: "flex", marginLeft: "10px" }}>
                                         {storedImage === ''
@@ -399,13 +399,13 @@ export default function Perfil() {
                                         </Paper>
                                         {value === 0
                                             ?
-                                            <div>
+                                            <div style={{paddingBottom: "10px"}}>
                                                 {tipo.length > 0
                                                     ?
                                                     <div className="infoDivPerfil">
                                                         <WorkIcon style={{ fontSize: 30, color: "brown" }}></WorkIcon>
                                                         <div className="textAboutPerfil">
-                                                            Aluno
+                                                            {tipo}
                                                         </div>
                                                     </div>
                                                     :
@@ -494,7 +494,7 @@ export default function Perfil() {
                                         }
                                         {value === 2
                                             ?
-                                            <div>
+                                            <div style={{paddingBottom: "10px"}}>
                                                 {publicacoes.length > 0
                                                     ?
                                                     <div>

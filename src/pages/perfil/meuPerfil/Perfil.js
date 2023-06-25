@@ -26,6 +26,8 @@ import Portas from "../../../portas";
 import Chip from '@material-ui/core/Chip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Avatar from '@material-ui/core/Avatar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { CKEditor } from 'ckeditor4-react';
 import "./perfil.css";
 
 function getModalStyle() {
@@ -55,6 +57,16 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'absolute',
         width: 400,
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    },
+
+    paperEdit: {
+        position: 'absolute',
+        width: '100%',
+        maxWidth: 800,
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
@@ -106,6 +118,9 @@ export default function Perfil() {
     const [publicacoes, setPublicacoes] = useState([]);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [openEditPub, setOpenEditPub] = useState(false);
+    const [editPubId, setEditPubId] = useState();
+    const [editPubContent, setEditPubContent] = useState('');
     const [storedImage, setStoredImage] = useState('');
     const [userImage, setUserImage] = useState('');
     const [consEnded, setconsEnded] = useState(false);
@@ -224,6 +239,7 @@ export default function Perfil() {
                         }
                     }
                 }
+                console.log(resJSON)
                 setPublicacoes(resJSON);
 
             } catch (err) {
@@ -339,6 +355,34 @@ export default function Perfil() {
         }
     }
 
+    const updatePublicacao = async () => {
+        if (token !== null) {
+            try {
+                //VLDS
+                if (editPubContent.trim().length < 1) {
+                    alert("O conteúdo da publicação não pode ficar vazio!")
+                    return
+                }
+
+                const body = { usertoken: token, id: editPubId, conteudo: editPubContent };
+                const response = await fetch(Portas().serverHost + "/updatePublicacao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                window.location.reload(false)
+
+
+            } catch (err) {
+                alert("Houve uma falha na atualização da publicação")
+                console.log(err.message);
+            }
+
+        }
+    }
+
     function updateAuxFields() {
         setNomeAux(nome)
         setCidadeAux(cidade)
@@ -363,6 +407,20 @@ export default function Perfil() {
         const file = event.target.files[0]
         const base64 = await convertBase64(file)
         setUserImage(base64)
+    }
+
+    function editPublication(id, content) {
+        setEditPubId(id)
+        setEditPubContent(content)
+        setOpenEditPub(true)
+    }
+
+    const update = (event) => {
+
+        var content = event.editor.getData();
+        setEditPubContent(content)
+        return;
+
     }
 
     useEffect(() => {
@@ -515,6 +573,71 @@ export default function Perfil() {
                         :
                         <></>
                     }
+                    {openEditPub
+                        ?
+                        <Modal
+                            open={openEditPub}
+                            onClose={() => setOpenEditPub(false)}
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                        >
+                            {
+                                <div style={modalStyle} className={classes.paperEdit}>
+                                    <div className="publication" style={{ paddingTop: 0 }}>
+                                        <CKEditor
+                                            data={editPubContent}
+                                            initData={editPubContent}
+                                            id="editor_home"
+                                            name="editor_home"
+                                            onChange={event => { update(event) }}
+                                            config={{
+                                                contentsCss: [
+                                                    'http://cdn.ckeditor.com/4.19.1/full-all/contents.css',
+                                                    'https://ckeditor.com/docs/ckeditor4/4.19.1/examples/assets/css/widgetstyles.css'
+                                                ],
+                                                language: 'pt-br',
+                                                embed_provider: '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}',
+                                                uiColor: '#FFFFFF',
+                                                toolbarCanCollapse: false,
+                                                toolbarGroups: [
+                                                    { name: 'clipboard', groups: ['clipboard', 'undo'] },
+                                                    { name: 'styles', groups: ['styles'] },
+                                                    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                                                    { name: 'paragraph', groups: ['align', 'list', 'indent', 'blocks', 'bidi', 'paragraph'] },
+                                                    { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+                                                    { name: 'links', groups: ['links'] },
+                                                    { name: 'insert', groups: ['insert'] },
+                                                    { name: 'forms', groups: ['forms'] },
+                                                    { name: 'document', groups: ['mode', 'document', 'doctools'] },
+                                                    { name: 'others', groups: ['others'] },
+                                                    { name: 'colors', groups: ['colors'] },
+                                                    { name: 'about', groups: ['about'] },
+                                                    { name: 'tools', groups: ['tools'] }
+                                                ],
+                                                extraPlugins: 'justify, font, embed, autoembed',
+                                                removeButtons: 'FontSize,Subscript,Superscript,Scayt,PasteText,PasteFromWord,Anchor,Strike,RemoveFormat,About,Styles'
+                                            }}
+                                            onInstanceReady={() => {
+
+                                            }}
+                                        />
+                                    </div>
+                                    <div style={{ marginTop: "10px" }}>
+                                        <ColorButton onClick={() => updatePublicacao()}
+                                        >
+                                            Editar
+                                        </ColorButton>
+                                        <ColorButton onClick={() => setOpenEditPub(false)}
+                                        >
+                                            Cancelar
+                                        </ColorButton>
+                                    </div>
+                                </div>
+                            }
+                        </Modal>
+                        :
+                        <></>
+                    }
                     <div className="contentHome">
                         <div className="publicationsHome">
                             <div className="perfilHeader">
@@ -563,13 +686,13 @@ export default function Perfil() {
                                         </Paper>
                                         {value === 0
                                             ?
-                                            <div>
+                                            <div style={{ paddingBottom: "10px" }}>
                                                 {tipo.length > 0
                                                     ?
                                                     <div className="infoDivPerfil">
                                                         <WorkIcon style={{ fontSize: 30, color: "brown" }}></WorkIcon>
                                                         <div className="textAboutPerfil">
-                                                            Aluno
+                                                            {tipo}
                                                         </div>
                                                     </div>
                                                     :
@@ -616,7 +739,7 @@ export default function Perfil() {
                                             <div>
                                                 {publicacoes.length > 0
                                                     ?
-                                                    <div>
+                                                    <div style={{ paddingBottom: "10px" }}>
                                                         {publicacoes.map((publicacao, index) =>
                                                             <div className="publicacaoHome">
                                                                 <div className="publicacaoCabecalhoHome">
@@ -627,9 +750,16 @@ export default function Perfil() {
                                                                     </div>
 
                                                                     <div className="publicationReportHome">
-                                                                        <Tooltip title="Denunciar">
-                                                                            <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen2(true)} />
-                                                                        </Tooltip>
+                                                                        <div >
+                                                                            <Tooltip title="Editar publicação">
+                                                                                <EditLocationIcon style={{ cursor: "pointer" }} onClick={() => editPublication(publicacao.id, publicacao.conteudo)} />
+                                                                            </Tooltip>
+                                                                        </div>
+                                                                        <div>
+                                                                            <Tooltip title="Excluir publicação" >
+                                                                                <DeleteIcon style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setOpen2(true)} />
+                                                                            </Tooltip>
+                                                                        </div>
                                                                     </div>
 
                                                                 </div>
@@ -669,7 +799,7 @@ export default function Perfil() {
                                                                     ? <div>
                                                                         {publicacao.comentarios.map((comentario) =>
                                                                             <Paper elevation={12} className="comentarioHome">
-                                                                                <div className="autorComentarioHome">{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
+                                                                                <div className="autorComentarioHome" style={{ cursor: "pointer" }} onClick={() => (window.location = '/perfil/' + comentario.id_autor)}>{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
                                                                                 <div className="conteudoComentarioHome">{comentario.conteudo}</div>
                                                                             </Paper>
 

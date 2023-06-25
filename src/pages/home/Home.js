@@ -17,6 +17,7 @@ import Modal from '@material-ui/core/Modal';
 import BtnCompartilhar from "../../components/btn_share/Btn_Share";
 import Avatar from '@material-ui/core/Avatar';
 import Profile from "../../components/img/profile.png";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import "./home.css";
 
 function getModalStyle() {
@@ -69,25 +70,68 @@ export default function Home() {
     const classes = useStyles();
     const { token } = useContext(StoreContext);
     const [publicacoes, setPublicacoes] = useState([]);
+    const [tipo, setTipo] = useState('');
+    const [motivo, setMotivo] = useState("")
     const [link, setLink] = useState([]);
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [open3, setOpen3] = useState(false);
 
     function share(api_url) {
         window.open(api_url + link, '_blank', 'noopener,noreferrer');
+    }
+
+    async function denunciar() {
+        if (motivo.trim().length < 1) {
+            alert("É necessário informar o motivo da denuncia.")
+        }
+        else {
+            setOpen2(false)
+            setMotivo("")
+            alert("Denúncia incluída com sucesso, lamentamos pelo transtorno que a mesma possa ter lhe causado, caso uma ação sobre essa publicação seja tomada, você será notificado por email.")
+        }
+    }
+
+    async function remover() {
+        if (motivo.trim().length < 1) {
+            alert("É necessário informar o motivo da remoção.")
+        }
+        else {
+            setOpen3(false)
+            setMotivo("")
+            alert("Exclusão realizada com sucesso, lamentamos pelo transtorno que a mesma possa ter lhe causado, a comunidade Talkdoor agradece pela sua colaboração na moderação da rede.")
+            window.location.reload(false);
+        }
     }
 
     const body2 = (
         <div style={modalStyle} className={classes.paper}>
             <div>Denunciar publicação:</div>
             <div style={{ marginTop: "10px" }}>
-                <TextField style={{ width: "100%" }} id={"denunciaHome"} label="Motivo" variant="filled" />
-                <ColorButton onClick={() => setOpen2(false)}
+                <TextField value={motivo} onChange={(event) => setMotivo(event.target.value)} style={{ width: "100%" }} id={"denunciaHome"} label="Motivo" variant="filled" />
+                <ColorButton onClick={() => denunciar()}
                 >
                     Denunciar
                 </ColorButton>
                 <ColorButton onClick={() => setOpen2(false)}
+                >
+                    Cancelar
+                </ColorButton>
+            </div>
+        </div>
+    );
+
+    const body3 = (
+        <div style={modalStyle} className={classes.paper}>
+            <div>Remover publicação:</div>
+            <div style={{ marginTop: "10px" }}>
+                <TextField value={motivo} onChange={(event) => setMotivo(event.target.value)} style={{ width: "100%" }} id={"denunciaHome"} label="Motivo" variant="filled" />
+                <ColorButton onClick={() => remover()}
+                >
+                    Remover
+                </ColorButton>
+                <ColorButton onClick={() => setOpen3(false)}
                 >
                     Cancelar
                 </ColorButton>
@@ -211,8 +255,33 @@ export default function Home() {
         }
     }
 
+    const getUser = async () => {
+        if (token !== null) {
+            try {
+
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/perfil", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                if (resJSON.length > 0) {
+                    setTipo(resJSON[0].tipo)
+                }
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
     useEffect(() => {
         getPublications();
+        getUser();
     }, []);
 
     return (
@@ -231,6 +300,19 @@ export default function Home() {
                 :
                 <></>
             }
+            {open3
+                ?
+                <Modal
+                    open={open3}
+                    onClose={() => setOpen3(false)}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                >
+                    {body3}
+                </Modal>
+                :
+                <></>
+            }
             <div className="contentHome">
                 <div className="publicationsHome">
                     {publicacoes.length > 0
@@ -241,20 +323,30 @@ export default function Home() {
                                     <div className="publicacaoCabecalhoHome">
                                         {publicacao.img !== null
                                             ?
-                                            <Avatar alt="Imagem de perfil" src={publicacao.img} className={classes.avatar} />
+                                            <Avatar alt="Imagem de perfil" src={publicacao.img} className={classes.avatar} style={{ cursor: "pointer" }} onClick={() => (window.location = '/perfil/' + publicacao.id_publicador)} />
                                             :
-                                            <Avatar alt="Imagem de perfil" src={Profile} className={classes.avatar} />
+                                            <Avatar alt="Imagem de perfil" src={Profile} className={classes.avatar} style={{ cursor: "pointer" }} onClick={() => (window.location = '/perfil/' + publicacao.id_publicador)} />
                                         }
                                         <div style={{ width: "70%" }}>
-                                            <div className="publicacaoNomeHome">{publicacao.nome}</div>
+                                            <div className="publicacaoNomeHome" onClick={() => (window.location = '/perfil/' + publicacao.id_publicador)}>{publicacao.nome}</div>
                                             <div className="publicacaoDataHome">{getData(publicacao.data_criacao)}</div>
                                         </div>
+                                        {!publicacao.owner ?
+                                            <div className="publicationReportHome">
+                                                {tipo !== 'Colaborador' ?
+                                                    <Tooltip title="Denunciar publicação">
+                                                        <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen2(true)} />
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title="Remover publicação">
+                                                        <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen3(true)} />
+                                                    </Tooltip>
+                                                }
+                                            </div>
+                                            :
+                                            <></>
+                                        }
 
-                                        <div className="publicationReportHome">
-                                            <Tooltip title="Denunciar">
-                                                <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen2(true)} />
-                                            </Tooltip>
-                                        </div>
 
                                     </div>
                                     <div className="publicacaoConteudoHome">{parse(publicacao.conteudo)}</div>
@@ -294,7 +386,7 @@ export default function Home() {
                                         ? <div>
                                             {publicacao.comentarios.map((comentario) =>
                                                 <Paper elevation={12} className="comentarioHome">
-                                                    <div className="autorComentarioHome">{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
+                                                    <div className="autorComentarioHome" style={{cursor: "pointer"}} onClick={() => (window.location = '/perfil/' + comentario.id_autor)}>{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
                                                     <div className="conteudoComentarioHome">{comentario.conteudo}</div>
                                                 </Paper>
 
