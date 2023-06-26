@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
+import Backdrop from '@material-ui/core/Backdrop';
 import parse from 'html-react-parser';
 import StoreContext from "../../components/Store/Context";
 import Portas from "../../portas";
 import Header from "../../components/header/Header";
 import ReportProblemIcon from '@material-ui/icons/ReportProblem';
+import Group from "../../components/img/group.png";
 import Button from '@material-ui/core/Button';
 import LikeIcon from '@material-ui/icons/ThumbUp';
 import CommentIcon from '@material-ui/icons/Textsms';
@@ -17,7 +19,15 @@ import Modal from '@material-ui/core/Modal';
 import BtnCompartilhar from "../../components/btn_share/Btn_Share";
 import Avatar from '@material-ui/core/Avatar';
 import Profile from "../../components/img/profile.png";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Checkbox from '@material-ui/core/Checkbox';
+
 import "./home.css";
 
 function getModalStyle() {
@@ -40,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 }));
 
 const ColorButton = withStyles((theme) => ({
@@ -75,12 +90,13 @@ export default function Home() {
     const [link, setLink] = useState([]);
     const [modalStyle] = React.useState(getModalStyle);
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = React.useState(true);
     const [open2, setOpen2] = useState(false);
     const [open3, setOpen3] = useState(false);
-
-    function share(api_url) {
-        window.open(api_url + link, '_blank', 'noopener,noreferrer');
-    }
+    const [openEnviar, setOpenEnviar] = useState(false);
+    const [selectedPubId, setSelectedPubId] = useState();
+    const [privados, setPrivados] = React.useState([]);
+    const [grupos, setGrupos] = React.useState([]);
 
     async function denunciar() {
         if (motivo.trim().length < 1) {
@@ -93,6 +109,11 @@ export default function Home() {
         }
     }
 
+    function removerPubId(id) {
+        setSelectedPubId(id)
+        setOpen3(true)
+    }
+
     async function remover() {
         if (motivo.trim().length < 1) {
             alert("É necessário informar o motivo da remoção.")
@@ -100,8 +121,30 @@ export default function Home() {
         else {
             setOpen3(false)
             setMotivo("")
-            alert("Exclusão realizada com sucesso, lamentamos pelo transtorno que a mesma possa ter lhe causado, a comunidade Talkdoor agradece pela sua colaboração na moderação da rede.")
-            window.location.reload(false);
+            deletePublicacao()
+        }
+    }
+
+    const deletePublicacao = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token, id: selectedPubId };
+                const response = await fetch(Portas().serverHost + "/deleteModeracao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                alert("Exclusão realizada com sucesso, lamentamos pelo transtorno que a mesma possa ter lhe causado, a comunidade Talkdoor agradece pela sua colaboração na moderação da rede.")
+                getPublications();
+
+
+            } catch (err) {
+                alert("Houve uma falha na exclusão da publicação")
+                console.log(err.message);
+            }
+
         }
     }
 
@@ -279,9 +322,92 @@ export default function Home() {
         }
     }
 
+    const getPrivados = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/getChatPrivado", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                setPrivados(resJSON)
+
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
+    const getGrupos = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/getGrupos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+
+                setGrupos(resJSON)
+                setLoading(false)
+
+            } catch (err) {
+                setLoading(false)
+                console.log(err.message);
+            }
+        }
+    }
+
+    const sendMensagem = async (type, id) => {
+        if (token !== null) {
+            try {
+                var mensagem = Portas().clientHost + "/home/" + id
+                if (type === 'grupo') {
+                    if (mensagem.trim().length > 1) {
+                        const body = { usertoken: token, grupo_id: id, mensagem: mensagem };
+                        const response = await fetch(Portas().serverHost + "/setMensagensGrupo", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(body)
+                        });
+
+                        var resJSON = await response.json();
+                        setOpenEnviar(false)
+                    }
+                }
+                if (type === 'privado') {
+                    if (mensagem.trim().length > 1) {
+                        const body = { usertoken: token, chatPrivado_id: id, mensagem: mensagem };
+                        const response = await fetch(Portas().serverHost + "/setMensagensPrivado", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(body)
+                        });
+
+                        var resJSON = await response.json();
+                        setOpenEnviar(false)
+                        
+                    }
+                }
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
+
     useEffect(() => {
         getPublications();
         getUser();
+        getPrivados();
+        getGrupos();
     }, []);
 
     return (
@@ -339,7 +465,7 @@ export default function Home() {
                                                     </Tooltip>
                                                     :
                                                     <Tooltip title="Remover publicação">
-                                                        <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => setOpen3(true)} />
+                                                        <ReportProblemIcon style={{ cursor: "pointer" }} onClick={() => removerPubId(publicacao.id)} />
                                                     </Tooltip>
                                                 }
                                             </div>
@@ -375,9 +501,8 @@ export default function Home() {
                                         </ColorButton>
                                         <BtnCompartilhar id={publicacao.id} />
                                         <ColorButton
-                                            onClick={() => alert(publicacao.id)}
+                                            onClick={() => setOpenEnviar(true)}
                                             startIcon={<SendIcon />}
-
                                         >
                                             Enviar
                                         </ColorButton>
@@ -386,7 +511,7 @@ export default function Home() {
                                         ? <div>
                                             {publicacao.comentarios.map((comentario) =>
                                                 <Paper elevation={12} className="comentarioHome">
-                                                    <div className="autorComentarioHome" style={{cursor: "pointer"}} onClick={() => (window.location = '/perfil/' + comentario.id_autor)}>{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
+                                                    <div className="autorComentarioHome" style={{ cursor: "pointer" }} onClick={() => (window.location = '/perfil/' + comentario.id_autor)}>{comentario.nome + " em " + getData(comentario.data_criacao)}</div>
                                                     <div className="conteudoComentarioHome">{comentario.conteudo}</div>
                                                 </Paper>
 
@@ -406,6 +531,80 @@ export default function Home() {
                         :
                         <></>
                     }
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
+                        open={openEnviar}
+                        onClose={() => setOpenEnviar(false)}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
+                    >
+                        <Fade in={openEnviar}>
+                            <div className={classes.paper}>
+                                <div>
+                                    <div className='participantesGp' style={{ marginBottom: '10px', display: "flex", justifyContent: 'left', alignContent: 'left', justifyItems: 'left', alignItems: 'left' }}>Enviar para:</div>
+                                    <List dense className={classes.root}>
+                                        {loading
+                                            ?
+                                            <CircularProgress />
+                                            : <div></div>
+                                        }
+                                        {grupos.length > 0
+                                            ?
+                                            <div>
+                                                {grupos.map((grupo, index) => {
+                                                    const labelId = `checkbox-list-secondary-label-${index}`;
+                                                    return (
+                                                        <ListItem key={index} button onClick={() => sendMensagem("grupo", grupo.id)}>
+                                                            <ListItemAvatar >
+                                                                <Avatar
+                                                                    alt={'imagem de perfil'}
+                                                                    src={Group}
+                                                                />
+                                                            </ListItemAvatar>
+                                                            <ListItemText id={labelId} primary={grupo.titulo} />
+                                                        </ListItem>
+                                                    );
+                                                })}
+                                            </div>
+                                            : <></>
+                                        }
+                                        {privados.length > 0
+                                            ?
+                                            <div>
+                                                {privados.map((privado, index) => {
+                                                    const labelId = `checkbox-list-secondary-label-${index}`;
+                                                    return (
+                                                        <ListItem key={index} button onClick={() => sendMensagem("privado", privado.id)}>
+                                                            <ListItemAvatar >
+                                                                {privado.foto.length > 0 ?
+                                                                    <Avatar alt="Imagem de perfil" src={privado.foto[0].img_json.img} />
+                                                                    :
+                                                                    <Avatar alt="Imagem de perfil" src={Profile} />
+                                                                }
+                                                            </ListItemAvatar>
+                                                            <ListItemText id={labelId} primary={privado.participante[0].nome} />
+                                                        </ListItem>
+                                                    );
+                                                })}
+                                            </div>
+                                            : <></>
+                                        }
+                                    </List>
+                                    <div className='buttonsEndPublication' style={{ marginTop: '20px' }}>
+                                        <ColorButton1 variant="contained" color="primary" onClick={() => setOpenEnviar(false)}>
+                                            Cancelar
+                                        </ColorButton1>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </Fade>
+                    </Modal>
                 </div>
             </div>
         </div>

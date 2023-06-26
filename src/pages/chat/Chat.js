@@ -170,7 +170,8 @@ export default function MiniDrawer() {
                                             {getParticipantesGp(grupo)}
                                         </div>
                                         <div className='chatLastMsg'>
-                                            João: E ai?
+                                            {grupo.last_msg_autor + ": "}
+                                            {grupo.last_msg}
                                         </div>
                                     </div>
                                 </div>
@@ -199,7 +200,8 @@ export default function MiniDrawer() {
                                             {privado.participante[0].nome}
                                         </div>
                                         <div className='chatLastMsg'>
-                                            João: E ai?
+                                            {privado.last_msg_autor + ": "}
+                                            {privado.last_msg}
                                         </div>
                                     </div>
                                 </div>

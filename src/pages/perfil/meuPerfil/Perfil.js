@@ -10,7 +10,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import CakeIcon from '@material-ui/icons/Cake';
 import InfoIcon from '@material-ui/icons/Info';
 import parse from 'html-react-parser';
-import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 import Button from '@material-ui/core/Button';
 import LikeIcon from '@material-ui/icons/ThumbUp';
 import CommentIcon from '@material-ui/icons/Textsms';
@@ -28,6 +27,22 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Avatar from '@material-ui/core/Avatar';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { CKEditor } from 'ckeditor4-react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Checkbox from '@material-ui/core/Checkbox';
+import Backdrop from '@material-ui/core/Backdrop';
+import Group from "../../../components/img/group.png";
+
 import "./perfil.css";
 
 function getModalStyle() {
@@ -72,6 +87,11 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 }));
 
 const ColorButton = withStyles((theme) => ({
@@ -124,6 +144,21 @@ export default function Perfil() {
     const [storedImage, setStoredImage] = useState('');
     const [userImage, setUserImage] = useState('');
     const [consEnded, setconsEnded] = useState(false);
+    const [openDeleteConfirm, setOpenDeleteConfirm] = React.useState(false);
+    const [privados, setPrivados] = React.useState([]);
+    const [grupos, setGrupos] = React.useState([]);
+    const [openEnviar, setOpenEnviar] = useState(false);
+    const [loading, setLoading] = React.useState(true);
+
+    const handleClickOpen = (id) => {
+        setEditPubId(id)
+        setOpenDeleteConfirm(true);
+    };
+
+    const handleClose = () => {
+        setOpenDeleteConfirm(false);
+    };
+
 
     const body2 = (
         <div style={modalStyle} className={classes.paper}>
@@ -383,6 +418,29 @@ export default function Perfil() {
         }
     }
 
+    const deletePublicacao = async () => {
+        if (token !== null) {
+            try {
+                console.log(editPubId)
+                const body = { usertoken: token, id: editPubId };
+                const response = await fetch(Portas().serverHost + "/deletePublicacao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                window.location.reload(false)
+
+
+            } catch (err) {
+                alert("Houve uma falha na exclusão da publicação")
+                console.log(err.message);
+            }
+
+        }
+    }
+
     function updateAuxFields() {
         setNomeAux(nome)
         setCidadeAux(cidade)
@@ -423,9 +481,91 @@ export default function Perfil() {
 
     }
 
+    const getPrivados = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/getChatPrivado", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+                setPrivados(resJSON)
+
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
+    const getGrupos = async () => {
+        if (token !== null) {
+            try {
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/getGrupos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                console.log(resJSON)
+
+                setGrupos(resJSON)
+                setLoading(false)
+
+            } catch (err) {
+                setLoading(false)
+                console.log(err.message);
+            }
+        }
+    }
+
+    const sendMensagem = async (type, id) => {
+        if (token !== null) {
+            try {
+                var mensagem = Portas().clientHost + "/home/" + id
+                if (type === 'grupo') {
+                    if (mensagem.trim().length > 1) {
+                        const body = { usertoken: token, grupo_id: id, mensagem: mensagem };
+                        const response = await fetch(Portas().serverHost + "/setMensagensGrupo", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(body)
+                        });
+
+                        var resJSON = await response.json();
+                        setOpenEnviar(false)
+                    }
+                }
+                if (type === 'privado') {
+                    if (mensagem.trim().length > 1) {
+                        const body = { usertoken: token, chatPrivado_id: id, mensagem: mensagem };
+                        const response = await fetch(Portas().serverHost + "/setMensagensPrivado", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(body)
+                        });
+
+                        var resJSON = await response.json();
+                        setOpenEnviar(false)
+
+                    }
+                }
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+    }
+
     useEffect(() => {
         getUser();
         getPublications();
+        getPrivados();
+        getGrupos();
     }, []);
 
     return (
@@ -434,6 +574,27 @@ export default function Perfil() {
                 ?
                 <div>
                     <Header />
+                    <Dialog
+                        open={openDeleteConfirm}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Deseja confirmar a exclusão?"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Essa ação é permanente, após a exclusão sua publicação não será mais exibida no seu perfil ou feed.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={deletePublicacao} color="primary">
+                                Confirmar
+                            </Button>
+                            <Button onClick={handleClose} color="primary" autoFocus>
+                                Cancelar
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                     {open
                         ?
                         <Modal
@@ -757,7 +918,7 @@ export default function Perfil() {
                                                                         </div>
                                                                         <div>
                                                                             <Tooltip title="Excluir publicação" >
-                                                                                <DeleteIcon style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => setOpen2(true)} />
+                                                                                <DeleteIcon style={{ cursor: "pointer", marginLeft: "10px" }} onClick={() => handleClickOpen(publicacao.id)} />
                                                                             </Tooltip>
                                                                         </div>
                                                                     </div>
@@ -790,6 +951,7 @@ export default function Perfil() {
                                                                     <BtnCompartilhar id={publicacao.id} />
                                                                     <ColorButton
                                                                         startIcon={<SendIcon />}
+                                                                        onClick={() => setOpenEnviar(true)}
 
                                                                     >
                                                                         Enviar
@@ -828,6 +990,80 @@ export default function Perfil() {
                                 </div>
                             </div>
                         </div>
+                        <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={openEnviar}
+                            onClose={() => setOpenEnviar(false)}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                                timeout: 500,
+                            }}
+                        >
+                            <Fade in={openEnviar}>
+                                <div className={classes.paper}>
+                                    <div>
+                                        <div className='participantesGp' style={{ marginBottom: '10px', display: "flex", justifyContent: 'left', alignContent: 'left', justifyItems: 'left', alignItems: 'left' }}>Enviar para:</div>
+                                        <List dense className={classes.root}>
+                                            {loading
+                                                ?
+                                                <CircularProgress />
+                                                : <div></div>
+                                            }
+                                            {grupos.length > 0
+                                                ?
+                                                <div>
+                                                    {grupos.map((grupo, index) => {
+                                                        const labelId = `checkbox-list-secondary-label-${index}`;
+                                                        return (
+                                                            <ListItem key={index} button onClick={() => sendMensagem("grupo", grupo.id)}>
+                                                                <ListItemAvatar >
+                                                                    <Avatar
+                                                                        alt={'imagem de perfil'}
+                                                                        src={Group}
+                                                                    />
+                                                                </ListItemAvatar>
+                                                                <ListItemText id={labelId} primary={grupo.titulo} />
+                                                            </ListItem>
+                                                        );
+                                                    })}
+                                                </div>
+                                                : <></>
+                                            }
+                                            {privados.length > 0
+                                                ?
+                                                <div>
+                                                    {privados.map((privado, index) => {
+                                                        const labelId = `checkbox-list-secondary-label-${index}`;
+                                                        return (
+                                                            <ListItem key={index} button onClick={() => sendMensagem("privado", privado.id)}>
+                                                                <ListItemAvatar >
+                                                                    {privado.foto.length > 0 ?
+                                                                        <Avatar alt="Imagem de perfil" src={privado.foto[0].img_json.img} />
+                                                                        :
+                                                                        <Avatar alt="Imagem de perfil" src={Profile} />
+                                                                    }
+                                                                </ListItemAvatar>
+                                                                <ListItemText id={labelId} primary={privado.participante[0].nome} />
+                                                            </ListItem>
+                                                        );
+                                                    })}
+                                                </div>
+                                                : <></>
+                                            }
+                                        </List>
+                                        <div className='buttonsEndPublication' style={{ marginTop: '20px' }}>
+                                            <ColorButton1 variant="contained" color="primary" onClick={() => setOpenEnviar(false)}>
+                                                Cancelar
+                                            </ColorButton1>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </Fade>
+                        </Modal>
                     </div>
                 </div>
                 : <></>

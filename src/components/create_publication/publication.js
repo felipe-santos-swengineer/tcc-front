@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import StoreContext from "../Store/Context";
 import { CKEditor } from 'ckeditor4-react';
 import parse from 'html-react-parser';
@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import Icon from '@material-ui/core/Icon';
 import Portas from "../../portas";
+import Switch from '@material-ui/core/Switch';
+import Tooltip from '@material-ui/core/Tooltip';
 import "./publication.css";
 
 const ColorButton = withStyles((theme) => ({
@@ -37,6 +39,8 @@ const ColorButton1 = withStyles((theme) => ({
 export default function Publication() {
 
     const [editorData, setEditorData] = useState("")
+    const [noticia, setNoticia] = React.useState(false);
+    const [tipo, setTipo] = useState("");
     const { token } = useContext(StoreContext);
     const update = (event) => {
 
@@ -49,7 +53,7 @@ export default function Publication() {
     const publicar = async () => {
         if (token !== null) {
             try {
-                const body = { usertoken: token, conteudo: editorData };
+                const body = { usertoken: token, conteudo: editorData, noticia: noticia };
                 const response = await fetch(Portas().serverHost + "/criarPublicacao", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -70,11 +74,55 @@ export default function Publication() {
         }
     }
 
+    const getUser = async () => {
+        if (token !== null) {
+            try {
+
+                const body = { usertoken: token };
+                const response = await fetch(Portas().serverHost + "/perfil", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+
+                var resJSON = await response.json();
+                if (resJSON.length > 0) {
+                    setTipo(resJSON[0].tipo)
+                }
+
+            } catch (err) {
+                console.log(err.message);
+            }
+
+        }
+    }
+
+    useEffect(() => {
+        getUser();
+    }, []);
+
     return (
         <div className="root">
             <Header />
             <div className="publication">
                 <div className="titleCreatePublication">Criar Publicação</div>
+                {tipo === 'Colaborador' ?
+                    <div style={{ marginBottom: "10px", display: "flex", justifyContent: "center", justifyItems: "center", alignItems: "center", alignContent: "center" }}>
+                        <div>
+                            Cadastrar como notícia?
+                        </div>
+                        <Tooltip title="Notícias são publicações apresentadas para todos usuários da rede, amigos ou não." placement="bottom">
+                            <Switch
+                                checked={noticia}
+                                onChange={() => setNoticia(!noticia)}
+                                name="checkedA"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                        </Tooltip>
+                    </div>
+                    :
+                    <></>
+                }
                 <CKEditor
                     data={editorData}
                     id="editor_home"
