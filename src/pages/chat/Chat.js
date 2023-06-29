@@ -94,6 +94,34 @@ export default function MiniDrawer() {
         setOpenChatPrivado(!openChatPrivado)
     }
 
+    function updateOpenCreateGp(state){
+        setOpenCreateGp(state)
+        if(state === false){
+            getGrupos();
+        }
+    }
+
+    function updateOpenCreateCp(state){
+        setOpenCreateCp(state)
+        if(state === false){
+            getPrivados();
+        }
+    }
+
+    function updateOpenChatGp(state){
+        setOpenChatGrupo(state)
+        if(state === false){
+            getGrupos();
+        }
+    }
+
+    function updateOpenChatCp(state){
+        setOpenChatPrivado(state)
+        if(state === false){
+            getPrivados();
+        }
+    }
+
     useEffect(() => {
         getGrupos();
         getPrivados();
@@ -104,7 +132,7 @@ export default function MiniDrawer() {
             {openCreateGp ? (
                 <ModalCriarConversa
                     open={openCreateGp}
-                    setOpen={() => setOpenCreateGp(!openCreateGp)}
+                    setOpen={() => updateOpenCreateGp(!openCreateGp)}
                     type={'grupo'}
                 ></ModalCriarConversa>
             ) : (
@@ -113,7 +141,7 @@ export default function MiniDrawer() {
             {openCreateCp ? (
                 <ModalCriarConversa
                     open={openCreateCp}
-                    setOpen={() => setOpenCreateCp(!openCreateCp)}
+                    setOpen={() => updateOpenCreateCp(!openCreateCp)}
                     type={'privado'}
                 ></ModalCriarConversa>
             ) : (
@@ -122,7 +150,7 @@ export default function MiniDrawer() {
             {openChatGrupo ? (
                 <ModalChat
                     open={openChatGrupo}
-                    setOpen={() => setOpenChatGrupo(!openChatGrupo)}
+                    setOpen={() => updateOpenChatGp(!openChatGrupo)}
                     type={'grupo'}
                     id={selectedGrupo}
                 ></ModalChat>
@@ -132,7 +160,7 @@ export default function MiniDrawer() {
             {openChatPrivado ? (
                 <ModalChat
                     open={openChatPrivado}
-                    setOpen={() => setOpenChatPrivado(!openChatPrivado)}
+                    setOpen={() => updateOpenChatCp(!openChatPrivado)}
                     type={'privado'}
                     id={selectedPrivado}
                     privado={privados}
